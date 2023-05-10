@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.DeptDAO">
+
+	<select id="selectDept" resultType="DeptEntity">
+		select *from dept
+	</select>
+
+	<select id="selectDepts" resultType="DeptEntity" parameterType="DeptEntity">
+		select *from dept   where  pflag=1   LIMIT #{begin},#{pages}
+	</select>
+
+	<select id="Count" resultType="int">
+		select count(*) from dept  where pflag=1
+	</select>
+
+
+	<select id="selectDeptss" resultType="DeptEntity" parameterType="DeptEntity">
+		select *from dept   where  pflag=0  LIMIT #{begin},#{pages}
+	</select>
+
+
+	<select id="Counts" resultType="int">
+		select count(*) from dept where pflag=0
+	</select>
+
+
+	<insert id="insertDept" parameterType="DeptEntity">
+		insert into dept values(null,#{pname},1,#{premark})
+	</insert>
+
+	<select id="selectOne" parameterType="int" resultType="DeptEntity">
+		select *from dept where pid=#{pid}
+	</select>
+
+	<update id="updateDept" parameterType="DeptEntity">
+		update dept set pname=#{pname},premark=#{premark} where pid=#{pid}
+	</update>
+
+
+
+
+
+	<select id="selectPname" resultType="int" parameterType="string">
+		select count(*) from dept where  pname=#{pname}
+	</select>
+
+
+
+	<update id="deleteDept" parameterType="int">
+		update dept set pflag=0 where pid=#{pid}
+	</update>
+
+
+
+	<!-- 恢复从0消失修改回1显示 -->
+	<update id="updateHf">
+		update dept set pflag=1
+	</update>
+
+	<!-- 批量删除 -->
+	<update id="deleteAll" >
+		update dept set pflag=0 where pid in
+		<foreach collection="pid" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
+
+	<!-- 批量恢复-->
+	<update id="delectAlls">
+		update dept set pflag=1 where pid in
+		<foreach collection="pid" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
+
+	<!-- 查询员工条数 -->
+	<select id="selectEmpCount" parameterType="int" resultType="int">
+		select count(*) from dept d,emp e where d.pid=e.pid and d.pid in
+		<foreach collection="pid" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</select>
+	<!-- //update emp set pid=1 where pid=#{pid} 部门撤回后员工的部门将改为管理规划部-->
+	<update id="updateEmpPname">
+		update emp set pid=1 where pid in
+		<foreach collection="pid" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
+</mapper>

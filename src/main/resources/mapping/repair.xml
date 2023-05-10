@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.RepairDAO">
+
+	<!-- 全查 -->
+	<select id="selectAll" parameterType="RepairEntity" resultType="RepairEntity">
+		select
+		house.hid,repairs.qid,area.aname,house.haddress,house.hnumber,repairs.qtime,repairs.qremark,emp.erealname
+		from repairs,house,area,emp where repairs.hid=house.hid and
+		house.aid=area.aid and repairs.eid=emp.eid  and house.hflag=2
+		LIMIT  #{begin},#{pages};
+	</select>
+    
+	<!-- 条数 -->
+	 <select id="Count" resultType="int">
+	 	select count(*) from repairs
+	 </select>
+	 
+	 <!--修改报损的备注-->
+	 <update id="updateQremark" parameterType="RepairEntity">
+	 	update repairs set qremark=#{qremark} where qid=#{qid}
+	 </update>
+	 
+	 
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.ContractDAO"> 
+  		
+  		<select id="all" parameterType="ContractEntity" resultType="ContractEntity">
+			select *From contract
+			LIMIT #{begin},#{pages}
+  		</select>
+  		
+  		<select id="count" resultType="int">
+  			select count(*) from contract
+  		</select>
+  		
+  		<insert id="add" parameterType="ContractEntity">
+  			insert into contract values(null,#{tname},#{tremark})
+  		</insert>
+  		
+  		<select id="xz" parameterType="int" resultType="ContractEntity">
+  			select *from contract where tid=#{tid}
+  		</select>
+  		
+</mapper>

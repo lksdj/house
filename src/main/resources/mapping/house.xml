@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.HouseDAO">
+
+	<select id="selectHouse" resultType="HouseEntity" parameterType="HouseEntity">
+		select
+		a.hid,b.sid,c.aid,b.sname,c.aname,a.haddress,a.hnumber,a.htype,a.harea,a.direction,a.hmoney,a.networkmoney,a.electricmoney,a.watermoney,a.gasmoney,a.electricnumber,a.waternumber,a.gesnumber,a.hname,a.hremark,a.himg,a.hflag
+		from house a,sort b,area c where a.sid=b.sid and a.aid=c.aid  
+		 ORDER BY a.hid desc LIMIT #{begin},#{pages}
+	</select>
+
+	<select id="selectHouses" resultType="HouseEntity"
+		parameterType="HouseEntity">
+		select
+		a.hid,b.sid,c.aid,b.sname,c.aname,a.haddress,a.hnumber,a.htype,a.harea,a.direction,a.hmoney,a.networkmoney,a.electricmoney,a.watermoney,a.gasmoney,a.electricnumber,a.waternumber,a.gesnumber,a.hname,a.hremark,a.himg,a.hflag
+		from house a,sort b,area c where a.sid=b.sid and a.aid=c.aid  and
+		a.sid=#{sid} ORDER BY a.hid desc LIMIT #{begin},#{pages}
+	</select>
+
+	<select id="Counts" resultType="int" parameterType="int">
+		select
+		count(*) from house where sid=#{sid}
+	</select>
+	
+	<select id="Count" resultType="int">
+		select count(*) from house 
+	</select>
+	
+
+	<select id="selectName" resultType="int" parameterType="string">
+			select count(*) from house where hnumber=#{hnumber}
+	</select>
+
+
+	<insert id="insertHouse" parameterType="HouseEntity">
+		insert into house VALUE
+		(null,#{sid},#{aid},#{haddress},#{hnumber},#{htype},#{harea},#{direction},#{hmoney},#{networkmoney},#{electricmoney},#{watermoney},#{gasmoney},#{electricnumber},#{waternumber},#{gesnumber},#{hname},#{hremark},#{himg},0)
+	</insert>
+
+	<select id="selectOne" resultType="HouseEntity"
+		parameterType="int">
+		select
+		a.hid,b.sid,c.aid,b.sname,c.aname,a.haddress,a.hnumber,a.htype,a.harea,a.direction,a.hmoney,a.networkmoney,a.electricmoney,a.watermoney,a.gasmoney,a.electricnumber,a.waternumber,a.gesnumber,a.hname,a.hremark,a.himg,a.hflag
+		from house a,sort b,area c where a.sid=b.sid and a.aid=c.aid and
+		a.hid=#{hid}
+	</select>
+
+
+
+	<update id="updateHouse" parameterType="HouseEntity">
+		update house set
+		sid=#{sid},aid=#{aid},haddress=#{haddress},hnumber=#{hnumber},htype=#{htype},harea=#{harea},direction=#{direction},hmoney=#{hmoney},networkmoney=#{networkmoney},electricmoney=#{electricmoney},watermoney=#{watermoney},gasmoney=#{gasmoney},electricnumber=#{electricnumber},waternumber=#{waternumber},gesnumber=#{gesnumber},hname=#{hname},hremark=#{hremark},himg=#{himg}
+		where hid=#{hid}
+	</update>
+
+
+	<select id="selectImg" resultType="string" parameterType="int">
+		select himg 
+		from house where hid=#{hid}
+	</select>
+
+</mapper>

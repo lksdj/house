@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.IncomeDAO">
+  	<!-- 查询 -->	
+  	<select id="selectAll" parameterType="IncomeEntity" resultType="IncomeEntity">
+  		select *from income LIMIT #{begin},#{pages}
+  	</select>
+  	<!-- 条数 -->
+  <select id="Count" resultType="int">
+  	select count(*) from income
+  </select>
+  
+  <!-- 新增 -->
+  <insert id="add" parameterType="IncomeEntity">
+  	insert into income values (null,#{eid},#{nmoney},#{nsource},#{ntime},#{nremark})
+  </insert>
+  
+  <!-- 单查询 -->
+  <select id="one" parameterType="int" resultType="IncomeEntity">
+  	select *from income where nid=#{nid}
+  </select>
+  
+  <!-- 修改 -->
+  <update id="upd" parameterType="IncomeEntity">
+  	update income set nmoney=#{nmoney},nsource=#{nsource},nremark=#{nremark} where nid=#{nid}
+  </update>
+</mapper>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.RegisterDAO">
+
+	<!-- 查询 -->
+	<select id="selectAll" parameterType="RegisterEntity" resultType="RegisterEntity">
+		select
+		r.rid,r.rdate,r.timg,r.rdeposit,r.rrent,r.rflag,r.rnexttime,c.cid,c.cname,c.ctel,e.eid,e.erealname,h.hid,h.haddress,h.hnumber,h.hflag
+		from register r,cus c,emp e,house h
+		where r.cid=c.cid and r.eid=e.eid and r.hid=h.hid and r.rflag=#{rflag} 
+		LIMIT  #{begin},#{pages};
+	</select>
+
+	<!-- 查询条数 -->
+	<select id="Count" resultType="int">
+		select count(*)
+		from register r,cus c,emp e,house h
+		where r.cid=c.cid and r.eid=e.eid and r.hid=h.hid
+	</select>
+	<!-- 客户姓名查询模拟百度 -->
+	<select id="selectCusBaiDu" parameterType="CusEntity" resultType="CusEntity">
+		select *from cus where cname like '%${cname}%'
+	</select>
+
+	<!-- 通过片区ID查询房屋类别 ！！！！！！ -->
+	<!-- <select id="LeiBie" resultType="RegisterEntity" parameterType="int"> 
+		select b.aname,c.sname from house a,area b,sort c where a.aid=b.aid and a.sid=c.sid 
+		and b.aid=#{aid} </select> -->
+
+	<!-- 查出出租房屋信息 -->
+	<select id="ChuZUFangWu" resultType="RegisterEntity"
+		parameterType="RegisterEntity">
+		select a.hid,a.hnumber,
+		b.aname,c.sname,a.haddress,a.harea
+		from house a,area b,sort c
+		where a.aid=b.aid and a.sid=c.sid and
+		b.aid=#{aid} and c.sid=#{sid} and a.harea>=#{h1} and a.harea
+		&lt;=#{h2}
+	</select>
+
+	<!-- 新增 -->
+	<insert id="insertAll" parameterType="RegisterEntity">
+		insert into register
+		values(null,#{rdate},#{eid},#{cid},#{hid},#{timg},#{rdeposit},#{rrent},1,#{rnexttime});
+	</insert>
+	<!-- 修改房屋状态 -->
+	<update id="updateF" parameterType="RegisterEntity">
+		update house set hflag=#{hflag} where hid=#{hid}
+	</update>
+
+	<!-- 修改单查询 -->
+	<select id="selectOne" resultType="RegisterEntity" parameterType="int">
+		select
+		c.cname,c.ctel,c.cid,d.aname,e.sname,b.haddress,b.hnumber,a.rdeposit,a.rrent,a.rnexttime,a.timg,d.aid,e.sid,b.hid,a.rid
+		from register a,house b,cus c,area d,sort e where a.hid=b.hid and
+		a.cid=c.cid and b.aid=d.aid and b.sid=e.sid and rid=#{rid}
+	</select>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="int">
+		update register set hid=#{hid},timg=#{timg},rdeposit=#{rdeposit},rrent=#{rrent},rnexttime=#{rnexttime} 
+		where rid=#{rid}
+	</update>
+	
+	<!-- 新增前查询rid -->
+	<select id="selectRid" resultType="int" parameterType="RegisterEntity" >
+		select rid from register where eid=#{eid} and cid=#{cid} and hid=#{hid} and rflag=1
+	</select>
+	
+	<!-- 新增时判断是否出租房屋已被出租 -->
+	<select id="selectHflag" resultType="int" parameterType="RegisterEntity">
+		select count(*) from house where hid=#{hid} and hflag=#{hflag}
+	</select>
+	
+	<select id="selectHouse" resultType="HouseEntity" parameterType="int">
+		select *from house where hid=#{hid} and hflag=0
+	</select>
+	
+	
+	<!-- 新增登记收费 -->
+	<insert id="insertCharge" parameterType="RegisterEntity">
+		insert into charge values(null,#{rid},#{eid},#{grent},#{gnexttime});
+	</insert>
+	
+	<!-- 拿到hid查出house表中费用值 -->
+	<select id="selectHid" parameterType="int" resultType="HouseEntity">
+		select *from house where hid=#{hid}
+	</select>
+	
+	<!-- 新增登记抄表 -->
+	<insert id="insertOperation" parameterType="OperationEntity">
+		insert into operation values (null,#{hid},#{oelectricnumber},#{owaternumber},#{ogesnumber},#{otime},#{eid})
+	</insert>
+	
+	<!-- 图形报表 -->
+	<select id="pictorial" resultType="RegisterEntity">
+		select sum(grent) grent,a.aname
+		from charge g,register r,house h,area a
+		where  r.hid=h.hid and r.rid=g.rid and h.aid=a.aid
+		group by a.aid
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

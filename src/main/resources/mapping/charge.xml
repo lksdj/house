@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.ChargeDAO">
+	
+	<!-- // 根据登记入住查询 且查到最大主键值 得到最大的下次收租日期 -->
+	<select id="selectCharge" parameterType="RegisterEntity" resultType="RegisterEntity">
+		select 
+		r.*,haddress,hnumber,ctel,cteltwo,c.cname,hname,gnexttime,ename,erealname
+		from cus c,register r,emp e,house h ,charge g
+		where 
+		c.cid=r.cid and e.eid=r.eid and h.hid=r.hid and g.rid=r.rid and rflag=1 
+		and gid in(select max(gid) from charge where rid=r.rid)
+		<if test="sid!=0 and sid!=null">
+			and sid = #{sid}
+		</if>
+		<if test="aid!=0 and aid!=null">
+			and aid = #{aid}
+		</if>
+		<if test="(htype!='')&amp;(htype!=null)">
+			and htype = #{htype}
+		</if>
+		<if test="(ctel!='')&amp;(ctel!=null)">
+			and ctel = #{ctel}
+		</if>
+		ORDER BY r.rid asc  
+		limit #{begin},#{pages} 
+	</select>
+	
+	<!-- 条数 -->
+	<select id="countCharge" resultType="int">
+			select count(*) from register where rflag=1
+	</select>
+	
+	
+	
+	<!-- 查询续租详细 -->
+	<select id="selectAll" resultType="ChargeEntity"  parameterType="ChargeEntity">
+		select
+		a.gid,e.haddress,e.hnumber,d.cname,d.ctel,a.grent,a.gnexttime,c.erealname,b.rid
+		from charge a,register b,emp c,cus d,house e where a.rid=b.rid and
+		a.eid=c.eid and b.hid=e.hid and b.cid=d.cid  and b.rid=#{rid} 
+		LIMIT #{begin},#{pages}
+	</select>
+	<!-- 查询续租详细条数 -->
+	<select id="Count" resultType="int" parameterType="int">
+		select count(*) from charge where rid=#{rid}
+	</select>
+	
+	<!-- 续租单查询 -->
+	<select id="selectOne" parameterType="int" resultType="RegisterEntity">
+		select  rrent from register where  rid=#{rid}  and  rflag=1
+	</select>
+	
+	<!-- 新增续租 -->
+	<insert id="insertCharge" parameterType="ChargeEntity">
+		insert into charge values(null,#{rid},#{eid},#{grent},#{gnexttime})
+	</insert>
+	
+	
+	<select id="selectExpire" parameterType="RegisterEntity" resultType="RegisterEntity">
+		select 
+		r.*,haddress,hnumber,ctel,cteltwo,c.cname,hname,gnexttime,ename,erealname
+		from cus c,register r,emp e,house h ,charge g
+		where 
+		c.cid=r.cid and e.eid=r.eid and h.hid=r.hid and g.rid=r.rid and rflag=1 
+		and gid in(select max(gid) from charge where rid=r.rid) and gnexttime &lt;=#{gnexttime}  and e.eid=#{eid}
+		<if test="sid!=0 and sid!=null">
+			and sid = #{sid}
+		</if>
+		<if test="aid!=0 and aid!=null">
+			and aid = #{aid}
+		</if>
+		<if test="(htype!='')&amp;(htype!=null)">
+			and htype = #{htype}
+		</if>
+		<if test="(ctel!='')&amp;(ctel!=null)">
+			and ctel = #{ctel}
+		</if>
+		ORDER BY r.rid asc  
+		limit #{begin},#{pages} 
+	</select>
+	<select id="expireCount" parameterType="RegisterEntity" resultType="int">
+		select 
+		count(*)
+		from cus c,register r,emp e,house h ,charge g
+		where 
+		c.cid=r.cid and e.eid=r.eid and h.hid=r.hid and g.rid=r.rid and rflag=1 
+		and gid in(select max(gid) from charge where rid=r.rid) 
+		and gnexttime &lt;=#{gnexttime} and e.eid=#{eid}
+	</select>
+	
+</mapper>

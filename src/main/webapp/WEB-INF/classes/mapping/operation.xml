@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.OperationDAO">
+
+	<!-- 查询抄表 -->
+	<!-- <select id="selectAll" resultType="OperationEntity" parameterType="OperationEntity"> 
+		select operation.oid,house.haddress,house.hnumber,cus.cname,cus.ctel,register.rdate,register.rnexttime,emp.erealname 
+		from operation,register,emp,house,cus where operation.oid=register.rid and 
+		operation.eid=emp.eid and register.hid=house.hid and register.cid=cus.cid 
+		ORDER BY operation.oid desc LIMIT #{begin},#{pages} </select> -->
+
+	<!-- 条数 -->
+	<!-- <select id="Count" resultType="int"> select count(*) from operation 
+		</select> -->
+
+	<!-- 查看查询 -->
+	<select id="selectLook" parameterType="OperationEntity"
+		resultType="OperationEntity">
+		select
+		house.hid,house.haddress,house.hnumber,cus.cname,
+		operation.oelectricnumber,operation.owaternumber,operation.ogesnumber,operation.otime,emp.erealname,
+		house.electricmoney,house.watermoney,house.gasmoney
+		from house,cus,emp,operation,register
+		where house.hid=operation.hid
+		and emp.eid=operation.eid
+		and house.hid=register.hid
+		and register.cid=cus.cid
+		and register.rflag=1
+		and register.rid=#{rid}
+		and operation.eid=#{eid}
+		LIMIT #{begin},#{pages}
+	</select>
+	<!-- 查看条数 -->
+	<select id="countLook" resultType="int" parameterType="int">
+		select count(*) 
+		from house,cus,emp,operation,register
+		where house.hid=operation.hid
+		and emp.eid=operation.eid
+		and house.hid=register.hid
+		and register.cid=cus.cid
+		and register.rflag=1
+		and register.rid=#{rid}
+	</select>
+	
+	<!-- 查询house单价 -->
+	<select id="selectDj" parameterType="int" resultType="OperationEntity">
+		select electricmoney,watermoney,gasmoney from house where hid=#{hid}
+	</select>
+	
+	<!-- 新增时查出不能小于上一个值 -->
+	<select id="selectOne" resultType="OperationEntity" parameterType="int">
+			select *from operation where oid in (select max(oid) from operation  where  hid=#{hid}) 
+	</select>
+	<!-- 新增 -->
+	<insert id="insertKe" parameterType="OperationEntity"> 
+			insert into operation values(null,#{hid},#{oelectricnumber},#{owaternumber},#{ogesnumber},#{otime},#{eid})
+	</insert>
+	<!-- 修改house表刻度 -->
+	<update id="updateHo" parameterType="OperationEntity">
+		update house set  electricnumber=#{oelectricnumber},waternumber=#{owaternumber},gesnumber=#{ogesnumber}
+		where hid=#{hid}
+	</update>
+	
+</mapper>

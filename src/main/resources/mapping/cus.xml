@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.CusDAO">
+	<!-- 分页查询 -->
+	<select id="selectAlls" resultType="CusEntity" parameterType="CusEntity">
+
+		select a.cid,a.cname,a.csex,a.ctel,a.cteltwo,a.ccard,b.erealname 
+		from cus a,emp b 
+		where a.eid=b.eid   ORDER BY a.cid desc LIMIT #{begin},#{pages}
+	</select>
+
+	<!-- 条数 -->
+	<select id="Count" parameterType="int" resultType="int">
+		select
+		count(*) from cus
+	</select>
+	
+	<!-- 新增 -->
+	<insert id="insertCus" parameterType="CusEntity">
+		insert into cus values (null,#{cname},#{csex},#{ctel},#{cteltwo},#{ccard},#{eid});
+	</insert>
+	
+	<!--  判断是否重复 -->
+	<select id="selectRepetition" parameterType="CusEntity" resultType="int">
+		select count(*) from cus 
+		<where>
+			<if test="ccard!=null and ccard!=''">
+				ccard=#{ccard}
+			</if>
+			
+			<if test="ctel!=null and ctel!=''">
+					ctel=#{ctel}
+			</if>
+			
+			<if test="cteltwo!=null and cteltwo!=''">
+				 cteltwo=#{cteltwo}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 修改单查询 -->
+	<select id="selectOne" parameterType="int" resultType="CusEntity">
+		select cname,csex,ctel,cteltwo,ccard from cus where cid=#{cid}
+	</select>
+	<!-- 修改 -->
+	<update id="updateCus" parameterType="CusEntity">
+		update cus set cname=#{cname},csex=#{csex},ctel=#{ctel},cteltwo=#{cteltwo},ccard=#{ccard} where cid=#{cid}
+	
+	</update>
+</mapper>

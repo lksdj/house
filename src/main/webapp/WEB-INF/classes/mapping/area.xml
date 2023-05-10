@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.AreaDAO">
+  
+  	<select id="selectArea" resultType="AreaEntity">
+  		select *from area
+  	</select>
+  
+  	<insert id="insertArea" parameterType="AreaEntity">
+  		insert into area values (null,#{aname})
+  	</insert>
+  	
+  	<select id="selectOne" parameterType="int" resultType="AreaEntity">
+  		select *from area where aid=#{aid}
+  	</select>
+  	
+  	<update id="updateArea" parameterType="AreaEntity">
+  		update area set aname=#{aname} where aid=#{aid}
+  	</update>
+  	
+  	<select id="Count" resultType="int">
+  		select count(*) from  area
+  	</select>
+  	
+  	<select id="selectAreas" resultType="AreaEntity" parameterType="AreaEntity">
+  		select *from area LIMIT #{begin},#{pages}
+  	</select>
+  	
+  	<select id="selectAname" parameterType="string" resultType="int">
+  		select count(*) from area where aname=#{aname}
+  	</select>
+</mapper>

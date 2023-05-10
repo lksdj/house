@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.JobDAO">
+ 
+ 	<!-- 查询 -->
+ 	<select id="selectJob" resultType="JobEntity">
+ 		select *from job
+ 	</select>
+ 	<!-- 新增 -->
+ 	<insert id="insertJob" parameterType="JobEntity">
+ 		insert into job values (null,#{jname})
+ 	</insert>
+ 	<!-- 单查询 -->
+ 	<select id="selectOne"   parameterType="int" resultType="JobEntity">
+ 		select *from job where jid=#{jid}
+ 	</select>
+ 	<!-- 修改 -->
+ 	<update id="updateJob" parameterType="JobEntity">
+ 		update job set jname=#{jname} where jid=#{jid}
+ 	</update>
+ 	<!-- 删除 -->
+ 	<delete id="deleteJob" parameterType="int">
+ 		delete from job where jid=#{jid}
+ 	</delete>
+ 	<!-- 条数 -->
+ 	<select id="Count" resultType="int">
+ 		select count(*) from job
+ 	</select>
+ 	<!-- 分页查询 -->
+ 	<select id="selectJobs" resultType="JobEntity" parameterType="JobEntity">
+ 		select *from job LIMIT  #{begin},#{pages}
+ 	</select>
+ 	
+ 	<select id="selectJname" resultType="int" parameterType="string">
+		select count(*) from job where jname=#{jname}
+	</select>
+</mapper>

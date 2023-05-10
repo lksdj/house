@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.ExpendDAO">
+
+	<!-- 查询 -->
+	<select id="all" parameterType="ExpendEntity" resultType="ExpendEntity">
+		select *from expend LIMIT #{begin},#{pages}
+	</select>
+	
+	<!-- 条数 -->
+	<select id="Count" resultType="int">
+		select count(*) from expend
+	</select>
+	
+	<!-- 新增 -->
+	<insert id="add" parameterType="ExpendEntity">
+		insert into expend values (null,#{eid},#{xmoney},#{xsource},#{xtime},#{xremark})
+	</insert>
+	
+	<!-- 单查询 -->
+	<select id="one" parameterType="int" resultType="ExpendEntity">
+		select *from expend where xid=#{xid}
+	</select>
+	
+	<!-- 修改 -->
+	<update id="upd" parameterType="ExpendEntity">
+		update expend set xmoney=#{xmoney},xsource=#{xsource},xremark=#{xremark} where xid=#{xid}
+	</update>
+	
+	
+ </mapper>

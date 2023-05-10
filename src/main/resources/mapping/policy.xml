@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.PolicyDAO">
+	<select id="count" resultType="int">
+		select count(*) from policy
+	</select>
+
+	<select id="all" resultType="PolicyEntity" parameterType="PolicyEntity">
+		select * from policy limit #{begin},#{pages}
+	</select>
+
+	<insert id="add" parameterType="PolicyEntity">
+		insert into policy values(null,#{plsource},#{pltime},#{plremark,typeHandler=org.apache.ibatis.type.BlobTypeHandler})
+	</insert>
+
+	<select id="one" parameterType="int" resultType="PolicyEntity">
+		select * from policy where plid=#{plid}
+	</select>
+	
+	<update id="upd" parameterType="PolicyEntity">
+		update policy set plsource=#{plsource},pltime=#{pltime},plremark=#{plremark,typeHandler=org.apache.ibatis.type.BlobTypeHandler}
+		where plid=#{plid}
+	</update>
+  
+</mapper>

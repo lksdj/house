@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.EmpDAO">
+	<!-- 查询 -->
+	<select id="selectEmp" resultType="EmpEntity">
+		select *from emp
+	</select>
+
+	<!-- 新增 -->
+	<insert id="insertEmp" parameterType="EmpEntity">
+		insert into emp values
+		(null,#{pid},#{jid},#{ename},#{epsw},#{erealname},#{etel},#{eaddress},1,#{eremark})
+	</insert>
+	<!-- 单查询 -->
+	<select id="selectOne" parameterType="int"
+		resultType="EmpEntity">
+		select
+		a.eid,b.pid,c.jid,b.pname,c.jname,a.ename,a.epsw,a.erealname,a.etel,a.eaddress,a.eremark
+		from emp a,dept b,job c where a.pid=b.pid and a.jid=c.jid and
+		eid=#{eid}
+	</select>
+	<!-- 修改 -->
+	<update id="updateEmp" parameterType="EmpEntity">
+		update emp set
+		pid=#{pid},jid=#{jid},ename=#{ename},epsw=#{epsw},erealname=#{erealname},etel=#{etel},eaddress=#{eaddress},eremark=#{eremark}
+		where eid=#{eid}
+	</update>
+	<!-- 删除 -->
+	<update id="deleteEmp" parameterType="int">
+		update emp set eflag=0
+		where eid=#{eid}
+	</update>
+	<!-- 条数 -->
+	<select id="Count" resultType="int" parameterType="int">
+		select
+		count(*) from emp where eflag=1 and jid>1
+	</select>
+	
+	<!-- 条数 -->
+	<select id="Counts" resultType="int" parameterType="int">
+		select
+		count(*) from emp where  eflag=0 and jid>1
+	</select>
+	<!-- 分页查询 1-->
+	<select id="selectEmps" parameterType="EmpEntity" resultType="EmpEntity">
+		select
+		a.eid,b.pname,c.jname,a.ename,a.epsw,a.erealname,a.etel,a.eaddress,a.eremark
+		from emp a,dept b,job c where a.pid=b.pid and a.jid=c.jid and eflag=1 and c.jid>1
+		ORDER BY a.eid desc LIMIT #{begin},#{pages}
+	</select>
+	<!--分页查询0 -->
+	<select id="selectEmpche" parameterType="EmpEntity" resultType="EmpEntity">
+		select
+		a.eid,b.pname,c.jname,a.ename,a.epsw,a.erealname,a.etel,a.eaddress,a.eremark
+		from emp a,dept b,job c where a.pid=b.pid and a.jid=c.jid and eflag=0 and c.jid>1
+		ORDER BY a.eid desc LIMIT #{begin},#{pages}
+	</select>
+	
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" >
+       update emp set eflag=0 where eid in
+        <foreach collection="eid" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+	
+	<!-- 批量恢复-->
+	<update id="delectAlls">
+       update emp set eflag=1 where eid in
+        <foreach collection="eid" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+	
+	<!-- 单查询经办人 -->
+	<select id="selecrtAgent" parameterType="EmpEntity" resultType="EmpEntity">
+	select
+		a.eid,b.pid,c.jid,b.pname,c.jname,a.ename,a.epsw,a.erealname,a.etel,a.eaddress,a.eremark
+		from emp a,dept b,job c where a.pid=b.pid and a.jid=c.jid
+		 and a.ename=#{ename} and a.epsw=#{epsw} 
+	</select>
+	<!-- 判断经理 -->
+	 <select id="selectJingLi" parameterType="EmpEntity" resultType="int">
+		select count(*) from emp a,dept b,job c 
+		where a.pid=b.pid and a.jid=c.jid and b.pid=#{pid} and c.jid=#{jid} and c.jname='经理';
+	</select>	
+	
+	
+	 <update id="updateJingLi" parameterType="EmpEntity">
+		update emp set jid=3 where pid=#{pid} and jid=#{jid}
+	</update>
+	 
+	
+	<!-- 判断登陆 -->
+	<select id="selectLogin" resultType="int"
+		parameterType="EmpEntity">
+		select count(*) from emp where ename=#{ename} and
+		epsw=#{epsw}
+	</select>
+
+	<select id="selectLoginName" parameterType="string" resultType="int">
+		select count(*) from emp where ename=#{ename}
+	</select>
+
+
+	<!-- 判断前段是否存在 -->
+	<select id="selectName" resultType="int"
+		parameterType="EmpEntity">
+		select count(*) from emp
+		<where>
+			<if test="ename!=null">
+				ename=#{ename}
+			</if>
+			<if test="erealname!=null">
+				and erealname=#{erealname}
+			</if>
+
+			<if test="etel!=null">
+				and etel=#{etel}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 修改密码 -->
+	<update id="updLogin" parameterType="EmpEntity">
+		update emp set epsw=#{epsw} where eid=#{eid}
+	</update>
+	
+	
+	
+	
+</mapper>

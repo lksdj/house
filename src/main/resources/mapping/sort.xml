@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.SortDAO">
+	<select id="selectSort" resultType="SortEntity">
+		select *from Sort
+	</select>
+
+	<insert id="insertSort" parameterType="SortEntity">
+		insert into Sort values (null,#{sname})
+	</insert>
+
+	<select id="selectOne" parameterType="int" resultType="SortEntity">
+		select *from Sort where sid=#{sid}
+	</select>
+
+	<update id="updateSort" parameterType="SortEntity">
+		update Sort set	sname=#{sname} where sid=#{sid}
+	</update>
+
+	<select id="Count" resultType="int">
+		select count(*) from sort
+	</select>
+
+	<select id="selectSorts" resultType="SortEntity" parameterType="SortEntity">
+		select *from Sort LIMIT #{begin},#{pages}
+	</select>
+	
+	<select id="selectsname" resultType="int" parameterType="SortEntity">
+		select count(*) from Sort where sname=#{sname}
+	</select>
+	
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hu.dao.CheckDAO">
+
+	<!-- 查询 -->
+	<select id="selectCheck" resultType="RegisterEntity" parameterType="RegisterEntity">
+		select
+		r.rid,r.rdate,r.timg,r.rdeposit,r.rrent,r.rflag,r.rnexttime,c.cid,c.cname,c.ctel,e.eid,e.erealname,h.hid,h.haddress,h.hnumber,h.hflag
+		from register r,cus c,emp e,house h
+		where r.cid=c.cid and r.eid=e.eid and r.hid=h.hid and r.rflag=#{rflag}
+		LIMIT  #{begin},#{pages};
+	</select>
+
+	<!-- 条数 -->
+	<select id="Count" resultType="int">
+		select count(*) from checks
+	</select>
+	<!--  -->
+	<select id="selectHid" resultType="int" parameterType="string" >
+		select hid from house where hnumber=#{hnumber}
+	</select>
+	<!-- // 第一步退租 根据rid修改登记入住 rflag状态值 -->
+	<update id="updateRflag" parameterType="int">
+		update register set rflag=0 where rid=#{rid}
+	</update>
+	
+	<!--  第二步退租 根据hid修改房子的hflag状态值  退租时房子要维修将房屋状态值改为2 正在维修中-->
+	<update id="updateHflag" parameterType="CheckEntity">
+		update house set hflag=#{hflag} where hid=#{hid}
+	</update>
+	
+	<!-- /第四步在退租表里新增退租数据 -->
+	<insert id="insertTu" parameterType="CheckEntity">
+		insert into checks values (null,#{rid},#{eid},#{krent},#{ktime},#{kremark},#{kflag})
+	</insert>
+	
+	<!-- 查一下kid -->
+	<select id="selectKid" parameterType="CheckEntity" resultType="int">
+		select kid from checks where rid=#{rid} and eid=#{eid}
+	</select>
+	
+	<!--新增维修时就需要在登记报损里插一条数据 -->
+	<insert id="insertRepair" parameterType="CheckEntity">
+		insert into repairs values(null,#{hid},#{kid},#{qtime},#{qremark},#{eid})
+	</insert>
+</mapper>
